@@ -30,6 +30,14 @@ def _extract_timestamps(vtt_line: str) -> list:
     return timestamps
 
 
+def _erase_lf_code(vtt_line: str) -> str:
+    return re.sub(r"^(.*)\n$", "\\1", vtt_line)
+
+
+def _is_end_of_line(text: str) -> list:
+    return re.match(r".*\W$", text)
+
+
 def to_json(vtt_path: str) -> str:
     return json.dumps(to_dict(vtt_path))
 
@@ -38,6 +46,7 @@ def to_dict(vtt_path: str) -> dict:
     parsed_lines = []
     ignored_lines = []
     parsed_line = {"start": None, "end": None, "text": None, "_raw_text": None}
+    text_queue = []
 
     with open(vtt_path, "r") as vtt_file:
 
@@ -52,8 +61,14 @@ def to_dict(vtt_path: str) -> dict:
                 parsed_line["end"] = timestamps[1]
 
             else:
-                parsed_line["text"] = str(vtt_line)
-                parsed_line["_raw_text"] = str(vtt_line)
+                text = _erase_lf_code(vtt_line)
+                text_queue.append(text)
+
+                if _is_end_of_line(text):
+                    parsed_line["text"] = " ".join(text_queue.copy())
+                    text_queue.clear()
+
+                parsed_line["_raw_text"] = text
 
                 # 値渡しする (参照渡しするとparsed_linesの中身が上書きされてしまう)
                 parsed_lines.append(parsed_line.copy())
