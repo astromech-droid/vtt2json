@@ -1,0 +1,6 @@
+WEBVTT
+
+STYLE
+::cue() {
+  font-family: Arial, Helvetica, sans-serif;
+}
