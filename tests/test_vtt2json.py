@@ -49,8 +49,8 @@ def test_multiple_lines():
             {
                 "start": "00:00:22.231",
                 "end": "00:00:25.526",
-                "text": "And, wow, you're not wearing that outfit.",
-                "_raw_text": "And, wow, you're not wearing that outfit.",
+                "text": "All right, that's not gonna happen.\n",
+                "_raw_text": "All right, that's not gonna happen.\n",
             },
             {
                 "start": "00:00:22.231",
@@ -62,5 +62,6 @@ def test_multiple_lines():
         "ignored_lines": [],
     }
     parsed_value = to_json(get_file("multiple_lines.vtt"))
+    print(parsed_value)
 
     assert parsed_value == json.dumps(expected_value)

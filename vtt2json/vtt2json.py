@@ -52,9 +52,10 @@ def to_dict(vtt_path: str) -> dict:
                 parsed_line["end"] = timestamps[1]
 
             else:
-                parsed_line["text"] = vtt_line
-                parsed_line["_raw_text"] = vtt_line
+                parsed_line["text"] = str(vtt_line)
+                parsed_line["_raw_text"] = str(vtt_line)
 
-                parsed_lines.append(parsed_line)
+                # 値渡しする (参照渡しするとparsed_linesの中身が上書きされてしまう)
+                parsed_lines.append(parsed_line.copy())
 
     return {"parsed_lines": parsed_lines, "ignored_lines": ignored_lines}
