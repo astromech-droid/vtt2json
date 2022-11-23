@@ -64,3 +64,32 @@ def test_multiple_lines():
     parsed_value = to_json(get_file("multiple_lines.vtt"))
 
     assert parsed_value == json.dumps(expected_value)
+
+
+def test_separated_lines():
+    expected_value = {
+        "parsed_lines": [
+            {
+                "start": "00:02:41.161",
+                "end": "00:02:43.956",
+                "text": None,
+                "_raw_text": "We just adopted her from Vietnam",
+            },
+            {
+                "start": "00:02:44.039",
+                "end": "00:02:46.250",
+                "text": None,
+                "_raw_text": "and we're bringing her home",
+            },
+            {
+                "start": "00:02:44.039",
+                "end": "00:02:46.250",
+                "text": "We just adopted her from Vietnam and we're bringing her home for the first time.",
+                "_raw_text": "for the first time.",
+            },
+        ],
+        "ignored_lines": ["\n"],
+    }
+    parsed_value = to_json(get_file("separated_lines.vtt"))
+
+    assert parsed_value == json.dumps(expected_value)
