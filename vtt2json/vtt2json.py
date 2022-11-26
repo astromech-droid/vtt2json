@@ -39,11 +39,49 @@ def _is_end_of_line(text: str) -> list:
     return re.match(r".*\W$", text)
 
 
-def to_json(vtt_path: str, verbos=False) -> str:
-    return json.dumps(to_dict(vtt_path, verbos))
+def _join_separated_lines(separated_lines: list) -> list:
+    joined_lines = []
+    text_queue = []
+    start = None
+    end = None
+    text = None
+    raw = []
+
+    for parsed_line in separated_lines:
+
+        text_queue.append(parsed_line["text"])
+
+        if start is None:
+            start = parsed_line["start"]
+
+        if "_raw" in parsed_line:
+            raw.append(parsed_line["_raw"])
+
+        if _is_end_of_line(parsed_line["text"]):
+            end = parsed_line["end"]
+            text = " ".join(text_queue)
+            text_queue.clear()
+            joined_line = {"start": start, "end": end, "text": text}
+
+            if len(raw) > 0:
+                joined_line["_raw"] = raw
+
+            joined_lines.append(joined_line)
+
+            # 初期化
+            start = None
+            end = None
+            text = None
+            raw = []
+
+    return joined_lines
 
 
-def to_dict(vtt_path: str, verbos=False) -> dict:
+def to_json(vtt_path: str, verbos=False, join_separated_lines=False) -> str:
+    return json.dumps(to_dict(vtt_path, verbos, join_separated_lines))
+
+
+def to_dict(vtt_path: str, verbos=False, join_separated_lines=False) -> dict:
     parsed_lines = []
     ignored_lines = []
     parsed_line = {"start": None, "end": None, "text": None}
@@ -79,6 +117,9 @@ def to_dict(vtt_path: str, verbos=False) -> dict:
                 # 値渡しする (参照渡しするとparsed_linesの中身が上書きされてしまう)
                 # ※deepcopyでないと子dict(_raw)が値渡しにならない)
                 parsed_lines.append(copy.deepcopy(parsed_line))
+
+    if join_separated_lines:
+        parsed_lines = _join_separated_lines(parsed_lines)
 
     dict_data = {
         "parsed_lines": parsed_lines,

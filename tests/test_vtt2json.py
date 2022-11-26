@@ -186,3 +186,53 @@ def test_separated_lines_verbos():
     parsed_value = to_json(get_file("separated_lines.vtt"), verbos=True)
 
     assert parsed_value == json.dumps(expected_value)
+
+
+def test_join_separated_lines():
+    expected_value = {
+        "parsed_lines": [
+            {
+                "start": "00:02:41.161",
+                "end": "00:02:46.250",
+                "text": "We just adopted her from Vietnam and we're bringing her home for the first time.",
+            },
+        ],
+    }
+    parsed_value = to_json(get_file("separated_lines.vtt"), join_separated_lines=True)
+
+    assert parsed_value == json.dumps(expected_value)
+
+
+def test_join_separated_lines_verbos():
+    expected_value = {
+        "parsed_lines": [
+            {
+                "start": "00:02:41.161",
+                "end": "00:02:46.250",
+                "text": "We just adopted her from Vietnam and we're bringing her home for the first time.",
+                "_raw": [
+                    {
+                        "start": "00:02:41.161",
+                        "end": "00:02:43.956",
+                        "text": "We just adopted her from Vietnam",
+                    },
+                    {
+                        "start": "00:02:44.039",
+                        "end": "00:02:46.250",
+                        "text": "and we're bringing her home",
+                    },
+                    {
+                        "start": "00:02:44.039",
+                        "end": "00:02:46.250",
+                        "text": "for the first time.",
+                    },
+                ],
+            },
+        ],
+        "ignored_lines": ["\n"],
+    }
+    parsed_value = to_json(
+        get_file("separated_lines.vtt"), verbos=True, join_separated_lines=True
+    )
+
+    assert parsed_value == json.dumps(expected_value)
