@@ -1,5 +1,6 @@
 import json
 import re
+import copy
 
 
 def _is_ignored_line(vtt_line: str) -> bool:
@@ -47,6 +48,9 @@ def to_dict(vtt_path: str, verbos=False) -> dict:
     ignored_lines = []
     parsed_line = {"start": None, "end": None, "text": None}
 
+    if verbos:
+        parsed_line["_raw"] = {"start": None, "end": None, "text": None}
+
     with open(vtt_path, "r") as vtt_file:
 
         for vtt_line in vtt_file:
@@ -56,18 +60,25 @@ def to_dict(vtt_path: str, verbos=False) -> dict:
 
             elif _is_timestamp_line(vtt_line):
                 timestamps: tuple = _extract_timestamps(vtt_line)
-                parsed_line["start"] = timestamps[0]
-                parsed_line["end"] = timestamps[1]
+                start = timestamps[0]
+                end = timestamps[1]
+                parsed_line["start"] = start
+                parsed_line["end"] = end
+
+                if verbos:
+                    parsed_line["_raw"]["start"] = start
+                    parsed_line["_raw"]["end"] = end
 
             else:
                 text = _erase_lf_code(vtt_line)
                 parsed_line["text"] = text
 
                 if verbos:
-                    parsed_line["_raw_text"] = text
+                    parsed_line["_raw"]["text"] = text
 
                 # 値渡しする (参照渡しするとparsed_linesの中身が上書きされてしまう)
-                parsed_lines.append(parsed_line.copy())
+                # ※deepcopyでないと子dict(_raw)が値渡しにならない)
+                parsed_lines.append(copy.deepcopy(parsed_line))
 
     dict_data = {
         "parsed_lines": parsed_lines,
