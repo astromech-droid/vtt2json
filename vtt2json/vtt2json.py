@@ -46,7 +46,6 @@ def to_dict(vtt_path: str, verbos=False) -> dict:
     parsed_lines = []
     ignored_lines = []
     parsed_line = {"start": None, "end": None, "text": None}
-    text_queue = []
 
     with open(vtt_path, "r") as vtt_file:
 
@@ -62,11 +61,7 @@ def to_dict(vtt_path: str, verbos=False) -> dict:
 
             else:
                 text = _erase_lf_code(vtt_line)
-                text_queue.append(text)
-
-                if _is_end_of_line(text):
-                    parsed_line["text"] = " ".join(text_queue.copy())
-                    text_queue.clear()
+                parsed_line["text"] = text
 
                 if verbos:
                     parsed_line["_raw_text"] = text

@@ -116,17 +116,17 @@ def test_separated_lines():
             {
                 "start": "00:02:41.161",
                 "end": "00:02:43.956",
-                "text": None,
+                "text": "We just adopted her from Vietnam",
             },
             {
                 "start": "00:02:44.039",
                 "end": "00:02:46.250",
-                "text": None,
+                "text": "and we're bringing her home",
             },
             {
                 "start": "00:02:44.039",
                 "end": "00:02:46.250",
-                "text": "We just adopted her from Vietnam and we're bringing her home for the first time.",
+                "text": "for the first time.",
             },
         ],
     }
@@ -141,19 +141,19 @@ def test_separated_lines_verbos():
             {
                 "start": "00:02:41.161",
                 "end": "00:02:43.956",
-                "text": None,
+                "text": "We just adopted her from Vietnam",
                 "_raw_text": "We just adopted her from Vietnam",
             },
             {
                 "start": "00:02:44.039",
                 "end": "00:02:46.250",
-                "text": None,
+                "text": "and we're bringing her home",
                 "_raw_text": "and we're bringing her home",
             },
             {
                 "start": "00:02:44.039",
                 "end": "00:02:46.250",
-                "text": "We just adopted her from Vietnam and we're bringing her home for the first time.",
+                "text": "for the first time.",
                 "_raw_text": "for the first time.",
             },
         ],
