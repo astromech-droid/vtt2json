@@ -38,14 +38,14 @@ def _is_end_of_line(text: str) -> list:
     return re.match(r".*\W$", text)
 
 
-def to_json(vtt_path: str) -> str:
-    return json.dumps(to_dict(vtt_path))
+def to_json(vtt_path: str, verbos=False) -> str:
+    return json.dumps(to_dict(vtt_path, verbos))
 
 
-def to_dict(vtt_path: str) -> dict:
+def to_dict(vtt_path: str, verbos=False) -> dict:
     parsed_lines = []
     ignored_lines = []
-    parsed_line = {"start": None, "end": None, "text": None, "_raw_text": None}
+    parsed_line = {"start": None, "end": None, "text": None}
     text_queue = []
 
     with open(vtt_path, "r") as vtt_file:
@@ -68,9 +68,17 @@ def to_dict(vtt_path: str) -> dict:
                     parsed_line["text"] = " ".join(text_queue.copy())
                     text_queue.clear()
 
-                parsed_line["_raw_text"] = text
+                if verbos:
+                    parsed_line["_raw_text"] = text
 
                 # 値渡しする (参照渡しするとparsed_linesの中身が上書きされてしまう)
                 parsed_lines.append(parsed_line.copy())
 
-    return {"parsed_lines": parsed_lines, "ignored_lines": ignored_lines}
+    dict_data = {
+        "parsed_lines": parsed_lines,
+    }
+
+    if verbos:
+        dict_data["ignored_lines"] = ignored_lines
+
+    return dict_data
